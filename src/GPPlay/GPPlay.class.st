@@ -20,6 +20,6 @@ GPPlay >> initialize [
 
 { #category : #'helper methods' }
 GPPlay >> m: obj [
-	AssertionGP value: obj.
-	^ (obj isNotNil and: [ obj isCollection ])
+	^ AssertionGP value: obj
+	"^ (obj isNotNil and: [ obj isCollection ])"
 ]

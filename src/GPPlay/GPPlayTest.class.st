@@ -14,7 +14,7 @@ GPPlayTest >> setUp [
 
 { #category : #tests }
 GPPlayTest >> test01 [
-	self assert: (p m: Object new)
+	self deny: (p m: Object new)
 ]
 
 { #category : #tests }
