@@ -20,7 +20,7 @@ GPPlayConfiguration >> distanceFromSolutionOf: individual [
 	
 	| p |
 	p := GPPlay new.
-	p assertionGP: [ :obj | individual evaluate: obj ].
+	p assertionGP: (individual evaluateWith: (Array with: #obj -> 'hello') asOrderedDictionary).
 	^ GPPlayTest buildSuite run passedCount
 ]
 
@@ -54,7 +54,7 @@ GPPlayConfiguration >> initializeGrammar [
 		isByteString
 		isFloat
 	"
-
+	grammar := GPContextFreeGrammar new.
 	grammar 
 		addRule: #E ofClass: RBMessageNode withSequence: #(#E #And #Block);
 		addRule: #E redirectingTo: #Variable;
@@ -65,7 +65,7 @@ GPPlayConfiguration >> initializeGrammar [
 		addMessageRule: #Message withValues: #(#isNil #isCollection #isNumber #isByteString #isFloat);
 		addRule: #Block ofClass: RBBlockNode withSequence: #(#E);
 		addLeafRule: #Variable ofClass: RBVariableNode withValues: #('obj').
-		
+	^ grammar
 	
 	"grammar := GPContextFreeGrammar new.
 	grammar 
@@ -99,20 +99,11 @@ GPPlayConfiguration >> mutate: individual [
 
 { #category : #hooks }
 GPPlayConfiguration >> newFunction [ 
-	| node "isTerminal" |
-	"isTerminal := false.
-	[ isTerminal ] whileFalse: [  node := grammar expand. 
-	isTerminal := node isLeafNode ]."
-	node := grammar expand"GivenMethod: (GPRandom instance randomlySelect: #(#grow #full))".
-	"ast := grammar generateASTFrom: node."
+	| node |
+	node := grammar expandFrom: #E.
 	node evaluationBlock: [ :n :ctx | grammar generateASTFrom: n.
-		n ast evaluate ];
+		n ast ];
 		printBlock: [ :n :ctx | n ast formattedCode ].
-	"node children do: [ :child | 
-		child evaluationBlock: [ :ch :ctx | ast evaluate ];
-		printBlock: [ :ch :ctx | ast formattedCode ] ].
-	node evaluationBlock: [ :ch :ctx |  ast evaluate ].
-	node printBlock: [ :ch :ctx | ast formattedCode ]."
 	^ node
 ]
 
