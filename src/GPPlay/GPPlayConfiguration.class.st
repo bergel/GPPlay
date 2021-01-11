@@ -20,8 +20,9 @@ GPPlayConfiguration >> distanceFromSolutionOf: individual [
 	
 	| p |
 	p := GPPlay new.
-	p assertionGP: (individual evaluateWith: (Array with: #obj -> 'hello') asOrderedDictionary).
-	^ GPPlayTest buildSuite run passedCount
+	p assertionGP: [ :obj | individual evaluateWith: { 'obj' -> obj } asDictionary ].
+	individual fitness: GPPlayTest buildSuite run passedCount negated.
+	^ individual fitness
 ]
 
 { #category : #example }
