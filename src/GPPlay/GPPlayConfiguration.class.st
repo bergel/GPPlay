@@ -16,12 +16,11 @@ GPPlayConfiguration >> createNewIndividual [
 
 { #category : #operations }
 GPPlayConfiguration >> distanceFromSolutionOf: individual [
-	"^ (individual evaluate - 234) abs"
-	
-	| p |
+	| p t |
 	p := GPPlay new.
 	p assertionGP: [ :obj | individual evaluateWith: { 'obj' -> obj } asDictionary ].
-	individual fitness: GPPlayTest buildSuite run passedCount negated.
+	t := GPPlayTest buildSuite run.
+	individual fitness: t runCount + t unexpectedErrorCount - t passedCount.
 	^ individual fitness
 ]
 
@@ -29,7 +28,7 @@ GPPlayConfiguration >> distanceFromSolutionOf: individual [
 GPPlayConfiguration >> example [ 	
 	| e |
 	e := GPEngine new.
-	GPRandom seed: 1342.
+	GPRandom seed: 1.
 	e configuration: GPPlayConfiguration new.
 	e execute.
 	^ e pickBestIndividual.
@@ -82,9 +81,9 @@ GPPlayConfiguration >> initializeGrammar [
 
 { #category : #operations }
 GPPlayConfiguration >> mutate: individual [
-	| nodeToMutate source |
+	"| nodeToMutate source |"
 	"nodeToMutate := self randomElementOf: (individual withAllChildren select: [ :n | n isLeafNode ])."
-	source := self newTerminal.
+	"source := self newTerminal.
 	nodeToMutate := individual withAllChildren detect: [ :ch | ch isKindOf: source class ] 
 		ifNone: [ | types found |
 			found := false.
@@ -92,19 +91,19 @@ GPPlayConfiguration >> mutate: individual [
 			[ found ] whileFalse: [ source := self newTerminal.
 				found := types includes: source class ].
 			individual withAllChildren detect: [ :ch | ch isKindOf: source class ] ifNone: [ self halt ].
-		].
-	nodeToMutate evaluationBlock: source evaluationBlock.
+		]."
+	^ individual deepCopy 
+	"nodeToMutate evaluationBlock: source evaluationBlock.
 	nodeToMutate printBlock: source printBlock.
-	nodeToMutate type: source type.
+	nodeToMutate type: source type."
 ]
 
 { #category : #hooks }
 GPPlayConfiguration >> newFunction [ 
 	| node |
 	node := grammar expandFrom: #E.
-	node evaluationBlock: [ :n :ctx | grammar generateASTFrom: n.
-		n ast ];
-		printBlock: [ :n :ctx | n ast formattedCode ].
+	node evaluationBlock: [ :n :ctx | grammar generateASTFrom: n ];
+		printBlock: [ :n :ctx | (grammar generateASTFrom: n) formattedCode ].
 	^ node
 ]
 
