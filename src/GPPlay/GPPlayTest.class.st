@@ -26,3 +26,8 @@ GPPlayTest >> test02 [
 GPPlayTest >> test03 [
 	self assert: (p m: #('hello' 'world'))
 ]
+
+{ #category : #tests }
+GPPlayTest >> test04 [
+	self deny: (p m: #(1 'world'))
+]
