@@ -19,7 +19,7 @@ GPPlayTest >> test01 [
 
 { #category : #tests }
 GPPlayTest >> test02 [
-	self assert: (p m: 'hello')
+	self deny: (p m: 'hello')
 ]
 
 { #category : #tests }
