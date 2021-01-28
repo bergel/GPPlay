@@ -31,3 +31,8 @@ GPPlayTest >> test03 [
 GPPlayTest >> test04 [
 	self deny: (p m: #(1 'world'))
 ]
+
+{ #category : #tests }
+GPPlayTest >> test05 [
+	self deny: (p m: (Array with: #() with: (Dictionary new)))
+]
